@@ -1,0 +1,1 @@
+"""Gestión institucional de egresados."""

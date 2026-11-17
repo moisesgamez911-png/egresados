@@ -1,0 +1,29 @@
+{% extends 'app_egresados/base.html' %}
+{% block title %}Resumen{% endblock %}
+{% block content %}
+<header class="page-header">
+    <div><div class="eyebrow"><span class="eyebrow-dot"></span> CENTRO INDUSTRIAL Y DE ENERGÍAS ALTERNATIVAS</div><h1>Resumen operativo</h1><p class="page-subtitle">Seguimiento a egresados <span>/</span> La Guajira</p></div>
+    {% if puede_gestionar_egresados %}<a class="button button-primary header-action" href="{% url 'egresado_nuevo' %}"><span class="plus">+</span> Registrar egresado</a>{% endif %}
+</header>
+<section class="metric-grid" aria-label="Indicadores del centro">
+    <article class="metric-card metric-featured"><div class="metric-top"><span>POBLACIÓN REGISTRADA</span><span class="metric-mark">01 / CIEA</span></div><strong class="metric-value">{{ total_egresados }}</strong><div class="metric-bottom"><span>Total de egresados</span><span class="metric-accent"></span></div></article>
+    <article class="metric-card"><div class="metric-top"><span>EN SEGUIMIENTO</span><span class="metric-symbol solar">SOL</span></div><strong class="metric-value">{{ validados }}</strong><div class="metric-bottom"><span>Validados y activos</span><span class="tiny-indicator solar-bg"></span></div></article>
+    <article class="metric-card"><div class="metric-top"><span>PENDIENTES</span><span class="metric-symbol wind">COLA</span></div><strong class="metric-value">{{ pendientes }}</strong><div class="metric-bottom"><span>Requieren validación</span><span class="tiny-indicator wind-bg"></span></div></article>
+    <article class="metric-card"><div class="metric-top"><span>DESACTUALIZADOS</span><span class="metric-symbol alert">!</span></div><strong class="metric-value">{{ desactualizados }}</strong><div class="metric-bottom"><span>Requieren contacto</span><span class="tiny-indicator alert-bg"></span></div></article>
+</section>
+<section class="dashboard-grid">
+    <article class="panel recent-panel">
+        <div class="panel-heading"><div><div class="section-code">01 / DIRECTORIO</div><h2>{% if es_bienestar %}Indicadores del centro{% else %}Últimos registros{% endif %}</h2></div>{% if acceso_nominal %}<a class="text-link" href="{% url 'egresados_lista' %}">Ver directorio <span aria-hidden="true">↗</span></a>{% endif %}</div>
+        {% if es_bienestar %}<div class="aggregate-note"><span class="aggregate-icon">A</span><div><strong>Vista agregada</strong><p>Los datos personales no están disponibles para este perfil.</p></div></div>{% elif ultimos_egresados %}
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>EGRESADO</th><th>PROGRAMA</th><th>ESTADO</th><th></th></tr></thead><tbody>
+            {% for egresado in ultimos_egresados %}<tr><td><a class="person-link" href="{% url 'egresado_detalle' egresado.pk %}"><span class="table-avatar">{{ egresado.nombres|slice:':1'|upper }}{{ egresado.apellidos|slice:':1'|upper }}</span><span><strong>{{ egresado.nombres }} {{ egresado.apellidos }}</strong><small>{{ egresado.get_tipo_documento_display }} · {{ egresado.documento }}</small></span></a></td><td class="program-cell">{{ egresado.programa.nombre }}</td><td><span class="state state-{{ egresado.estado }}">{{ egresado.get_estado_display }}</span></td><td><a class="row-arrow" href="{% url 'egresado_detalle' egresado.pk %}" aria-label="Ver a {{ egresado.nombres }}">↗</a></td></tr>{% endfor %}
+        </tbody></table></div>
+        {% else %}<div class="empty-state"><span class="empty-symbol">—</span><strong>El directorio está listo para empezar</strong><p>Registra al primer egresado para ver su seguimiento aquí.</p><a class="button button-secondary" href="{% url 'egresado_nuevo' %}">Registrar egresado</a></div>{% endif %}
+    </article>
+    {% if not es_bienestar %}<aside class="panel alerts-panel"><div class="panel-heading"><div><div class="section-code">02 / ATENCIÓN</div><h2>Por revisar</h2></div><span class="alert-count">{{ alertas|length|stringformat:'02d' }}</span></div>
+        {% for egresado in alertas %}<a class="alert-row" href="{% url 'egresado_detalle' egresado.pk %}"><span class="alert-marker {% if egresado.estado == 'desactualizado' %}marker-amber{% elif egresado.estado == 'no_localizable' %}marker-red{% endif %}"></span><span class="alert-copy"><strong>{{ egresado.nombres }} {{ egresado.apellidos }}</strong><small>{{ egresado.get_estado_display }}</small></span><span class="alert-arrow">↗</span></a>{% empty %}<div class="all-clear"><span class="all-clear-mark">✓</span><strong>Todo al día</strong><p>No hay alertas que requieran atención.</p></div>{% endfor %}
+        <div class="alert-footer"><span>PROGRAMAS ACTIVOS</span><strong>{{ programas_activos }}</strong></div>
+    </aside>{% endif %}
+</section>
+<footer class="page-footer"><span>SEGUIMIENTO A EGRESADOS <i></i> CIEA / REGIONAL LA GUAJIRA</span><span>DATOS DEL CENTRO <b>ACTIVOS</b></span></footer>
+{% endblock %}

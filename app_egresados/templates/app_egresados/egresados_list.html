@@ -1,0 +1,16 @@
+{% extends 'app_egresados/base.html' %}
+{% block title %}Directorio{% endblock %}
+{% block content %}
+<header class="page-header list-header"><div><div class="eyebrow"><span class="eyebrow-dot"></span> SEGUIMIENTO / REGISTROS</div><h1>Directorio de egresados</h1><p class="page-subtitle">{{ egresados|length }} resultados en el Centro</p></div>{% if puede_gestionar_egresados %}<a class="button button-primary header-action" href="{% url 'egresado_nuevo' %}"><span class="plus">+</span> Registrar egresado</a>{% endif %}</header>
+<section class="panel directory-panel">
+    <form method="get" class="filter-bar">
+        <label class="search-field"><span class="search-icon" aria-hidden="true">⌕</span><input type="search" name="q" value="{{ consulta }}" placeholder="Buscar por nombre, documento o programa" aria-label="Buscar egresados"></label>
+        <label class="filter-select"><span class="filter-label">ESTADO</span><select name="estado"><option value="">Todos</option>{% for valor, etiqueta in estados %}<option value="{{ valor }}" {% if estado_seleccionado == valor %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></label>
+        <label class="filter-select"><span class="filter-label">PROGRAMA</span><select name="programa"><option value="">Todos</option>{% for programa in programas %}<option value="{{ programa.pk }}" {% if programa_seleccionado == programa.pk|stringformat:'s' %}selected{% endif %}>{{ programa.nombre }}</option>{% endfor %}</select></label>
+        <button class="button button-secondary filter-submit" type="submit">Filtrar</button>
+    </form>
+    {% if egresados %}<div class="table-wrap"><table class="data-table directory-table"><thead><tr><th>EGRESADO</th><th>PROGRAMA / FICHA</th><th>CONTACTO</th><th>ESTADO</th><th></th></tr></thead><tbody>
+        {% for egresado in egresados %}<tr><td><a class="person-link" href="{% url 'egresado_detalle' egresado.pk %}"><span class="table-avatar">{{ egresado.nombres|slice:':1'|upper }}{{ egresado.apellidos|slice:':1'|upper }}</span><span><strong>{{ egresado.nombres }} {{ egresado.apellidos }}</strong><small>{{ egresado.get_tipo_documento_display }} · {{ egresado.documento }}</small></span></a></td><td><strong>{{ egresado.programa.nombre }}</strong><small class="table-subline">Ficha {{ egresado.ficha.numero }}</small></td><td><span>{{ egresado.correo|default:'Sin correo' }}</span><small class="table-subline">{{ egresado.telefono|default:'Sin teléfono' }}</small></td><td><span class="state state-{{ egresado.estado }}">{{ egresado.get_estado_display }}</span></td><td><a class="row-arrow" href="{% url 'egresado_detalle' egresado.pk %}" aria-label="Ver detalle de {{ egresado.nombres }}">↗</a></td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<div class="empty-state"><span class="empty-symbol">⌕</span><strong>No encontramos registros</strong><p>Prueba con otros términos o cambia los filtros aplicados.</p><a class="text-link" href="{% url 'egresados_lista' %}">Limpiar filtros ↗</a></div>{% endif %}
+</section>
+{% endblock %}

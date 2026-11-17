@@ -1,0 +1,18 @@
+{% extends 'app_egresados/base.html' %}
+{% block title %}Registrar egresado{% endblock %}
+{% block content %}
+<header class="page-header form-page-header"><div><a class="back-link" href="{% url 'egresados_lista' %}">← Directorio</a><div class="eyebrow"><span class="eyebrow-dot"></span> NUEVO REGISTRO / 01</div><h1>Registrar egresado</h1><p class="page-subtitle">Información personal, académica y certificación.</p></div></header>
+<form method="post" class="record-form" novalidate>
+    {% csrf_token %}
+    {% if formulario.non_field_errors %}<div class="form-errors">{{ formulario.non_field_errors }}</div>{% endif %}
+    <section class="panel form-section"><div class="form-section-title"><span>01</span><div><h2>Identificación y contacto</h2><p>Datos para localizar y reconocer al egresado.</p></div></div><div class="form-grid">
+        {% for field in formulario %}{% if field.name == 'tipo_documento' or field.name == 'documento' or field.name == 'nombres' or field.name == 'apellidos' or field.name == 'correo' or field.name == 'telefono' or field.name == 'municipio' %}<div class="field-group {% if field.name == 'nombres' or field.name == 'apellidos' %}field-half{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>{% endif %}{% endfor %}
+    </div></section>
+    <section class="panel form-section"><div class="form-section-title"><span>02</span><div><h2>Trayectoria formativa</h2><p>La ficha debe corresponder al programa seleccionado.</p></div></div><div class="form-grid">
+        {% for field in formulario %}{% if field.name == 'programa' or field.name == 'ficha' or field.name == 'referencia_certificacion' or field.name == 'fecha_certificacion' or field.name == 'fecha_egreso' %}<div class="field-group"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>{% endif %}{% endfor %}
+    </div><div class="verification-fields">
+        {% for field in formulario %}{% if field.name == 'certificacion_verificada' or field.name == 'autorizacion_datos' %}<div class="check-row"><label for="{{ field.id_for_label }}">{{ field }}<span>{{ field.label }}{% if field.name == 'certificacion_verificada' %}<small>Validada contra acta de grado o registro oficial disponible.</small>{% else %}<small>El consentimiento habilita el seguimiento y las encuestas.</small>{% endif %}</span></label>{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>{% endif %}{% endfor %}
+    </div></section>
+    <div class="form-actions"><a class="button button-quiet" href="{% url 'egresados_lista' %}">Cancelar</a><button class="button button-primary" type="submit">Guardar registro <span aria-hidden="true">↗</span></button></div>
+</form>
+{% endblock %}

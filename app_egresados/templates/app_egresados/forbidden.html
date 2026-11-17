@@ -1,0 +1,3 @@
+{% extends 'app_egresados/base.html' %}
+{% block title %}Acceso restringido{% endblock %}
+{% block content %}<section class="forbidden panel"><div class="section-code">403 / ACCESO RESTRINGIDO</div><h1>Esta información no está disponible para tu perfil.</h1><p>Tu rol no tiene permiso para consultar registros nominales.</p><a class="button button-secondary" href="{% url 'inicio' %}">Volver al resumen</a></section>{% endblock %}

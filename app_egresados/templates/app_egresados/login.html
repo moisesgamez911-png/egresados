@@ -1,0 +1,28 @@
+{% extends 'app_egresados/base.html' %}
+{% block title %}Ingresar{% endblock %}
+{% block public_content %}
+<main class="login-page">
+    <section class="login-panel">
+        <a class="brand login-brand" href="{% url 'iniciar_sesion' %}"><span class="brand-mark">C</span><span class="brand-copy"><strong>CIEA</strong><small>SEGUIMIENTO / LA GUAJIRA</small></span></a>
+        <div class="login-kicker"><span class="status-dot"></span> SISTEMA INSTITUCIONAL</div>
+        <h1>Conectamos<br>trayectorias.</h1>
+        <p>Seguimiento a egresados del Centro Industrial y de Energías Alternativas.</p>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            {% if formulario.non_field_errors %}<div class="form-errors">{{ formulario.non_field_errors }}</div>{% endif %}
+            <label for="id_username">Usuario</label>{{ formulario.username }}
+            <label for="id_password">Contraseña</label>{{ formulario.password }}
+            {% for field in formulario %}{% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}{% endfor %}
+            <button class="button button-primary login-submit" type="submit">Ingresar al espacio <span aria-hidden="true">↗</span></button>
+        </form>
+        <div class="login-foot"><span>RIOHACHA · MAICAO</span><span>© CIEA / SENA</span></div>
+    </section>
+    <aside class="login-art" aria-label="Energías renovables de La Guajira">
+        <div class="art-grid"></div><div class="sun-mark"></div>
+        <div class="art-caption"><span>11.5° N / 72.9° W</span><span>ENERGÍA QUE MUEVE TALENTO</span></div>
+        <div class="windmill windmill-one"><i></i><b></b></div><div class="windmill windmill-two"><i></i><b></b></div>
+        <div class="art-title">TALENTO<br><span>EN MOVIMIENTO</span></div>
+        <div class="art-line"></div>
+    </aside>
+</main>
+{% endblock %}
